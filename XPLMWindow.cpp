@@ -29,7 +29,7 @@ namespace {
 void XPLMDrawWindowThunk(XPLMWindowID id, void* refcon) {
   XPLMWindow* wnd = static_cast<XPLMWindow*>(refcon);
   assert(wnd->id() == id);
-  wnd->OnDraw();
+  wnd->OnDrawWindow();
 }
 
 void XPLMHandleKeyThunk(

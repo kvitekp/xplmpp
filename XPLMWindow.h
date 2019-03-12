@@ -79,7 +79,7 @@ class XPLMWindow {
   bool IsInFront();
 
   // XPLM window callbacks
-  virtual void OnDraw() {}
+  virtual void OnDrawWindow() {}
   virtual void OnKey(char key, XPLMKeyFlags flags, unsigned char vkey, bool losingFocus) {}
   virtual void OnMouseClick(int x, int y, XPLMMouseStatus status) {}
   virtual void OnRightClick(int x, int y, XPLMMouseStatus status) {}
