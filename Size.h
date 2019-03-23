@@ -20,6 +20,8 @@
 #ifndef XPLMPP_SIZE_H
 #define XPLMPP_SIZE_H
 
+#include <sstream>
+
 namespace xplmpp {
 
 template<typename T>
@@ -43,6 +45,20 @@ struct SizeT {
     height(sz.height)
   {}
 
+  bool NotEmpty() const {
+    return width > 0 && height > 0;
+  }
+
+  bool IsEmpty() const {
+    return !NotEmpty();
+  }
+
+  std::string ToString() const {
+    std::stringstream s;
+    s << *this;
+    return s.str();
+  }
+
   T width;
   T height;
 };
@@ -50,6 +66,14 @@ struct SizeT {
 typedef SizeT<int> Size;
 typedef SizeT<float> SizeF;
 typedef SizeT<double> SizeD;
+
+template<typename T>
+std::ostream& operator<<(std::ostream& o, const SizeT<T>& sz) {
+  o << "{"
+    << sz.width  << ", "
+    << sz.height << "}";
+  return o;
+}
 
 }  // namespace xplmpp
 

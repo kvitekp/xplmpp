@@ -20,7 +20,10 @@
 #ifndef XPLMPP_RECT_H
 #define XPLMPP_RECT_H
 
+#include "xplmpp/Size.h"
 #include "xplmpp/Point.h"
+
+#include <sstream>
 
 namespace xplmpp {
 
@@ -66,6 +69,10 @@ struct RectT {
     return PtInRect(pt.x, pt.y);
   }
 
+  SizeT<T> Size() const {
+    return SizeT<T>(right - left, top - bottom);
+  }
+
   PointT<T> TopLeft() const {
     return PointT<T>(left, top);
   }
@@ -78,6 +85,34 @@ struct RectT {
     return PointT<T>(left + (right - left) / 2, bottom + (top - bottom) / 2);
   }
 
+  bool NotEmpty() const {
+    return right > left && top > bottom;
+  }
+
+  bool IsEmpty() const {
+    return !NotEmpty();
+  }
+
+  void Inflate(T x, T y) {
+    left -= x;
+    top += y;
+    right += x;
+    bottom -= y;
+  }
+
+  void Deflate(T x, T y) {
+    left += x;
+    top -= y;
+    right -= x;
+    bottom += y;
+  }
+
+  std::string ToString() const {
+    std::stringstream s;
+    s << *this;
+    return s.str();
+  }
+
   T left;
   T top;
   T right;
@@ -87,6 +122,44 @@ struct RectT {
 typedef RectT<int> Rect;
 typedef RectT<float> RectF;
 typedef RectT<double> RectD;
+
+template<typename T>
+std::ostream& operator<<(std::ostream& o, const RectT<T>& rc) {
+  o << "{"
+    << rc.left   << ", "
+    << rc.bottom << ", "
+    << rc.right  << ", "
+    << rc.top    << "}";
+  return o;
+}
+
+/*
+ * OpenGL helpers
+ */
+#ifdef __GL_H__
+
+inline void glVertex2(const Rect& rc) {
+  glVertex2i(rc.left, rc.bottom);
+  glVertex2i(rc.left, rc.top);
+  glVertex2i(rc.right, rc.top);
+  glVertex2i(rc.right, rc.bottom);
+}
+
+inline void glVertex2(const RectF& rc) {
+  glVertex2f(rc.left, rc.bottom);
+  glVertex2f(rc.left, rc.top);
+  glVertex2f(rc.right, rc.top);
+  glVertex2f(rc.right, rc.bottom);
+}
+
+inline void glVertex2(const RectD& rc) {
+  glVertex2d(rc.left, rc.bottom);
+  glVertex2d(rc.left, rc.top);
+  glVertex2d(rc.right, rc.top);
+  glVertex2d(rc.right, rc.bottom);
+}
+
+#endif  // #ifndef __GL_H__
 
 }  // namespace xplmpp
 

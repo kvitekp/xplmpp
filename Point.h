@@ -20,6 +20,8 @@
 #ifndef XPLMPP_POINT_H
 #define XPLMPP_POINT_H
 
+#include <sstream>
+
 namespace xplmpp {
 
 template<typename T>
@@ -43,6 +45,12 @@ struct PointT {
     y(sz.y)
   {}
 
+  std::string ToString() const {
+    std::stringstream s;
+    s << *this;
+    return s.str();
+  }
+
   T x;
   T y;
 };
@@ -50,6 +58,33 @@ struct PointT {
 typedef PointT<int> Point;
 typedef PointT<float> PointF;
 typedef PointT<double> PointD;
+
+template<typename T>
+std::ostream& operator<<(std::ostream& o, const PointT<T>& pt) {
+  o << "{"
+    << pt.x << ", "
+    << pt.y << "}";
+  return o;
+}
+
+/*
+ * OpenGL helpers
+ */
+#ifdef __GL_H__
+
+inline void glVertex2(const Point& pt) {
+  glVertex2i(pt.x, pt.y);
+}
+
+inline void glVertex2(const PointF& pt) {
+  glVertex2f(pt.x, pt.y);
+}
+
+inline void glVertex2(const PointD& pt) {
+  glVertex2d(pt.x, pt.y);
+}
+
+#endif  // #ifndef __GL_H__
 
 }  // namespace xplmpp
 
