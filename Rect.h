@@ -85,12 +85,20 @@ struct RectT {
     return PointT<T>(left, top);
   }
 
+  PointT<T> BottomLeft() const {
+    return PointT<T>(left, bottom);
+  }
+
+  PointT<T> TopRight() const {
+    return PointT<T>(right, top);
+  }
+
   PointT<T> BottomRight() const {
     return PointT<T>(right, bottom);
   }
 
   PointT<T> Center() const {
-    return PointT<T>(left + (right - left) / 2, bottom + (top - bottom) / 2);
+    return PointT<T>(left + Width() / 2, bottom + Height() / 2);
   }
 
   bool NotEmpty() const {
