@@ -69,8 +69,16 @@ struct RectT {
     return PtInRect(pt.x, pt.y);
   }
 
+  T Width() const {
+    return right - left;
+  }
+
+  T Height() const {
+    return top - bottom;
+  }
+
   SizeT<T> Size() const {
-    return SizeT<T>(right - left, top - bottom);
+    return SizeT<T>(Width(), Height());
   }
 
   PointT<T> TopLeft() const {
