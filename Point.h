@@ -20,6 +20,8 @@
 #ifndef XPLMPP_POINT_H
 #define XPLMPP_POINT_H
 
+#include "xplmpp/Size.h"
+
 #include <sstream>
 
 namespace xplmpp {
@@ -44,6 +46,19 @@ struct PointT {
   : x(sz.x),
     y(sz.y)
   {}
+
+  void Offset(T x_offset, T y_offset) {
+    x += x_offset;
+    x += y_offset;
+  }
+
+  void Offset(const SizeT<T>& sz) {
+    Offset(sz.width, sz.hight);
+  }
+
+  void Offset(const PointT<T>& pt) {
+    Offset(pt.x, pt.y);
+  }
 
   std::string ToString() const {
     std::stringstream s;

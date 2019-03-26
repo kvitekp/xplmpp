@@ -116,11 +116,53 @@ struct RectT {
     bottom -= y;
   }
 
+  void Inflate(const SizeT<T>& sz) {
+    Inflate(sz.width, sz.height);
+  }
+
   void Deflate(T x, T y) {
     left += x;
     top -= y;
     right -= x;
     bottom += y;
+  }
+
+  void Deflate(const SizeT<T>& sz) {
+    Deflate(sz.width, sz.height);
+  }
+
+  void Offset(T x, T y) {
+    left += x;
+    top += y;
+    right += x;
+    bottom += y;
+  }
+
+  void Offset(const SizeT<T>& sz) {
+    Offset(sz.width, sz.hight);
+  }
+
+  void Offset(const PointT<T>& pt) {
+    Offset(pt.x, pt.y);
+  }
+
+  void MoveToX(T x) {
+    right = x + Width();
+    left = x;
+  }
+
+  void MoveToY(T y) {
+    top = y + Height();
+    bottom = y;
+  }
+
+  void MoveToXY(T x, T y) {
+    MoveToX(x);
+    MoveToY(y);
+  }
+
+  void MoveToXY(const PointT<T>& pt) {
+    MoveToXY(pt.x, pt.y);
   }
 
   std::string ToString() const {
