@@ -25,8 +25,8 @@ Log g_log;
 
 Log::Logger::Logger(LogLevel log_level)
 : log_level_(log_level) {
-  if (g_log.ShouldLog(log_level)) {
-    stream_ << g_log.prefix_;
+  if (g_log.ShouldLog(log_level) && g_log.prefix_provider_) {
+    stream_ << g_log.prefix_provider_();
   }
 }
 

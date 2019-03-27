@@ -47,9 +47,6 @@ const LogLevel kDefaultLogLevel = ERROR;
 class Log {
 public:
 
-  // Log writer function
-  typedef void (*LogWriter)(const char* string);
-
   // Log streamer helper
   class Logger {
   public:
@@ -71,17 +68,16 @@ public:
     log_level_ = log_level;
   }
 
-  std::string prefix() const { return prefix_; }
-  void set_prefix(const std::string& prefix) {
-    prefix_ = prefix;
-  }
-  void set_prefix(const char* prefix) {
-    prefix_ = prefix;
+  typedef void(*LogWriter)(const char* string);
+  LogWriter log_writer() const { return log_writer_;  }
+  void set_log_writer(LogWriter log_writer) {
+    log_writer_ = log_writer;
   }
 
-  LogWriter log_writer() const { return log_writer_;  }
-  void set_log_writer(LogWriter log_writer) { 
-    log_writer_ = log_writer; 
+  typedef std::string (*PrefixProvider)();
+  PrefixProvider prefix_provider() const { return prefix_provider_;  }
+  void set_prefix_provider(PrefixProvider prefix_provider) {
+    prefix_provider_ = prefix_provider;
   }
 
   void WriteString(const char* string);
@@ -96,8 +92,8 @@ public:
  private:
   friend Logger;
   LogLevel log_level_;
-  std::string prefix_;
   LogWriter log_writer_ = nullptr;
+  PrefixProvider prefix_provider_ = nullptr;
 };
 
 extern Log g_log;
