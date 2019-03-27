@@ -15,14 +15,12 @@
 //
 // -----------------------------------------------------------------------------
 //
-// XPLM Log interface.
+// Log interface.
 
 #ifndef XPLMPP_LOG_H
 #define XPLMPP_LOG_H
 
 #include <sstream>
-
-#include "xplmpp/Base.h"
 
 // Windows stupidly pollutes global namespace.
 #ifdef ERROR
@@ -45,10 +43,14 @@ const LogLevel kDefaultLogLevel = INFO;
 const LogLevel kDefaultLogLevel = ERROR;
 #endif
 
-// Implements XPLM logging.
-class XPLMLog {
+// Log object.
+class Log {
 public:
 
+  // Log writer function
+  typedef void (*LogWriter)(const char* string);
+
+  // Log streamer helper
   class Logger {
   public:
     Logger(LogLevel log_level);
@@ -61,8 +63,8 @@ public:
     std::stringstream stream_;
   };
 
-  XPLMLog(LogLevel log_level = kDefaultLogLevel);
-  ~XPLMLog() = default;
+  Log(LogLevel log_level = kDefaultLogLevel);
+  ~Log() = default;
 
   LogLevel log_level() const { return log_level_; }
   void set_log_level(LogLevel log_level) {
@@ -75,6 +77,11 @@ public:
   }
   void set_prefix(const char* prefix) {
     prefix_ = prefix;
+  }
+
+  LogWriter log_writer() const { return log_writer_;  }
+  void set_log_writer(LogWriter log_writer) { 
+    log_writer_ = log_writer; 
   }
 
   void WriteString(const char* string);
@@ -90,11 +97,12 @@ public:
   friend Logger;
   LogLevel log_level_;
   std::string prefix_;
+  LogWriter log_writer_ = nullptr;
 };
 
-extern XPLMLog g_log;
+extern Log g_log;
 
-#define LOG(level) XPLMLog::Logger(level).stream()
+#define LOG(level) Log::Logger(level).stream()
 
 }  // namespace xplmpp
 
