@@ -15,37 +15,52 @@
 //
 // -----------------------------------------------------------------------------
 //
-// XPLM Log module.
+// XPLM Log interface.
 
 #ifndef XPLMPP_LOG_H
 #define XPLMPP_LOG_H
 
+#include <sstream>
+
 #include "xplmpp/Base.h"
 
-// Windows stupidly pullutes global namespace.
+// Windows stupidly pollutes global namespace.
 #ifdef ERROR
 #undef ERROR
 #endif
 
 namespace xplmpp {
 
-// Log level declarations
-typedef int LogLevel;
-const LogLevel INFO = 0;
-const LogLevel WARNING = 1;
-const LogLevel ERROR = 2;
-const LogLevel FATAL = 4;
-const LogLevel VERBOSE = INT_MAX;
+enum LogLevel {
+  INFO,
+  WARNING,
+  ERROR,
+  FATAL,
+  VERBOSE = INT_MAX
+};
 
 #ifdef _DEBUG
-const LogLevel kDefaultLogLevel = VERBOSE;
+const LogLevel kDefaultLogLevel = INFO;
 #else
 const LogLevel kDefaultLogLevel = ERROR;
 #endif
 
 // Implements XPLM logging.
 class XPLMLog {
- public:
+public:
+
+  class Logger {
+  public:
+    Logger(LogLevel log_level);
+    ~Logger();
+
+    std::ostream& stream() { return stream_;  }
+
+  private:
+    LogLevel log_level_;
+    std::stringstream stream_;
+  };
+
   XPLMLog(LogLevel log_level = kDefaultLogLevel);
   ~XPLMLog() = default;
 
@@ -62,19 +77,24 @@ class XPLMLog {
     prefix_ = prefix;
   }
 
-  void LogString(LogLevel log_level, const char* string);
-  void LogString(LogLevel log_level, const std::string& string) {
-    LogString(log_level, string.c_str());
+  void WriteString(const char* string);
+  void WriteString(const std::string& string) {
+    WriteString(string.c_str());
+  }
+
+  bool ShouldLog(LogLevel log_level) const {
+    return log_level >= log_level_;
   }
 
  private:
+  friend Logger;
   LogLevel log_level_;
   std::string prefix_;
 };
 
 extern XPLMLog g_log;
 
-#define LOG(level, string) g_log.LogString(level, string)
+#define LOG(level) XPLMLog::Logger(level).stream()
 
 }  // namespace xplmpp
 

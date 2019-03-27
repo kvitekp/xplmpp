@@ -15,11 +15,9 @@
 //
 // -----------------------------------------------------------------------------
 //
-// XPLM Log module.
+// XPLM Log implementation.
 
 #include "xplmpp/XPLMLog.h"
-
-#include <sstream>
 
 #include "XPLMUtilities.h"
 
@@ -27,19 +25,26 @@ namespace xplmpp {
 
 XPLMLog g_log;
 
-/*
- * XPLM log implementation.
- */
+XPLMLog::Logger::Logger(LogLevel log_level)
+: log_level_(log_level) {
+  if (g_log.ShouldLog(log_level)) {
+    stream_ << g_log.prefix_;
+  }
+}
+
+XPLMLog::Logger::~Logger() {
+  if (g_log.ShouldLog(log_level_)) {
+    stream_ << std::endl;
+    g_log.WriteString(stream_.str());
+  }
+}
+
 XPLMLog::XPLMLog(LogLevel log_level)
 : log_level_(log_level) {
 }
 
-void XPLMLog::LogString(LogLevel log_level, const char* string) {
-  if (log_level < log_level_) {
-    std::stringstream ss;
-    ss << prefix_ << string << std::endl;
-    ::XPLMDebugString(ss.str().c_str());
-  }
+void XPLMLog::WriteString(const char* string) {
+  ::XPLMDebugString(string);
 }
 
 }  // namespace xplmpp
