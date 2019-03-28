@@ -15,41 +15,46 @@
 //
 // -----------------------------------------------------------------------------
 //
-// Log implementation.
+// Scoped file object implementation.
 
-#include "xplmpp/Log.h"
+#include "xplmpp/File.h"
+
+#include "assert.h"
 
 namespace xplmpp {
 
-#if IBM
-Log g_log(kDefaultLogLevel, ::OutputDebugStringA);
-#else
-Log g_log(kDefaultLogLevel);
-#endif
+File::File(FILE* file)
+: file_(file) {
+}
 
-Log::Logger::Logger(LogLevel log_level)
-: log_level_(log_level) {
-  if (g_log.ShouldLog(log_level) && g_log.prefix_provider_) {
-    stream_ << g_log.prefix_provider_();
+File::~File() {
+  Close();
+}
+
+bool File::Open(const char* file_name, const char * mode) {
+  assert(file_ == nullptr);
+  file_ = fopen(file_name, mode);
+  return file_ != nullptr;
+}
+
+void File::Close() {
+  if (!ifstream_) {
+    ifstream_->close();
+    ifstream_ = nullptr;
+  }
+  if (file_) {
+    fclose(file_);
+    file_ = nullptr;
   }
 }
 
-Log::Logger::~Logger() {
-  if (g_log.ShouldLog(log_level_)) {
-    stream_ << std::endl;
-    g_log.WriteString(stream_.str());
+std::ifstream& File::ifstream() {
+  assert(file_ != nullptr);
+  if (!ifstream_) {
+    ifstream_ = std::make_unique<std::ifstream>(file_);
   }
-}
 
-Log::Log(LogLevel log_level, LogWriter log_writer)
-: log_level_(log_level)
-, log_writer_(log_writer) {
-}
-
-void Log::WriteString(const char* string) {
-  if (log_writer_) {
-    log_writer_(string);
-  }
+  return *ifstream_;
 }
 
 }  // namespace xplmpp

@@ -22,6 +22,8 @@
 
 #include <sstream>
 
+#include "xplmpp/Common.h"
+
 // Windows stupidly pollutes global namespace.
 #ifdef ERROR
 #undef ERROR
@@ -60,7 +62,10 @@ public:
     std::stringstream stream_;
   };
 
-  Log(LogLevel log_level = kDefaultLogLevel);
+  typedef void(*LogWriter)(const char* string);
+  typedef std::string(*PrefixProvider)();
+
+  Log(LogLevel log_level, LogWriter log_writer = nullptr);
   ~Log() = default;
 
   LogLevel log_level() const { return log_level_; }
@@ -68,13 +73,11 @@ public:
     log_level_ = log_level;
   }
 
-  typedef void(*LogWriter)(const char* string);
   LogWriter log_writer() const { return log_writer_;  }
   void set_log_writer(LogWriter log_writer) {
     log_writer_ = log_writer;
   }
 
-  typedef std::string (*PrefixProvider)();
   PrefixProvider prefix_provider() const { return prefix_provider_;  }
   void set_prefix_provider(PrefixProvider prefix_provider) {
     prefix_provider_ = prefix_provider;

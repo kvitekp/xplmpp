@@ -1,4 +1,4 @@
-// Copyright 2019 Peter Kvitek.
+// Copyright (c) 2019 Peter Kvitek. All rights reserved.
 //
 // Author: Peter Kvitek (pete@kvitek.com)
 //
@@ -15,41 +15,43 @@
 //
 // -----------------------------------------------------------------------------
 //
-// Log implementation.
+// Scoped file object interface.
 
-#include "xplmpp/Log.h"
+#ifndef XPLMPP_FILE_H
+#define XPLMPP_FILE_H
+
+#include <string>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <cerrno>
+
+#include "xplmpp/Common.h"
 
 namespace xplmpp {
 
-#if IBM
-Log g_log(kDefaultLogLevel, ::OutputDebugStringA);
-#else
-Log g_log(kDefaultLogLevel);
-#endif
+// Scoped file object.
+class File {
+public:
+  File(FILE* file_ = nullptr);
+  ~File();
 
-Log::Logger::Logger(LogLevel log_level)
-: log_level_(log_level) {
-  if (g_log.ShouldLog(log_level) && g_log.prefix_provider_) {
-    stream_ << g_log.prefix_provider_();
+  bool Open(const char* file_name, const char * mode);
+  bool Open(const std::string& file_name, const char * mode) {
+    return Open(file_name.c_str(), mode);
   }
-}
 
-Log::Logger::~Logger() {
-  if (g_log.ShouldLog(log_level_)) {
-    stream_ << std::endl;
-    g_log.WriteString(stream_.str());
-  }
-}
+  void Close();
 
-Log::Log(LogLevel log_level, LogWriter log_writer)
-: log_level_(log_level)
-, log_writer_(log_writer) {
-}
+  operator FILE*() { return file_; }
 
-void Log::WriteString(const char* string) {
-  if (log_writer_) {
-    log_writer_(string);
-  }
-}
+  std::ifstream& ifstream();
+
+private:
+  FILE* file_ = nullptr;
+  std::unique_ptr<std::ifstream> ifstream_;
+};
 
 }  // namespace xplmpp
+
+#endif  // #ifndef XPLMPP_FILE_H
