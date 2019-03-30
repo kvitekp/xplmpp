@@ -35,8 +35,6 @@ XPLMCommand::~XPLMCommand() {
 XPLMCommandRef XPLMCommand::Create(const char* name,
                                    const char* description,
                                    bool before) {
-  assert(ref_ == nullptr);
-
   ref_ = CreateCommand(name, description);
   if (!ref_)
     return nullptr;

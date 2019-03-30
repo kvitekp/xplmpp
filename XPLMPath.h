@@ -1,4 +1,4 @@
-// Copyright 2019 Peter Kvitek.
+// Copyright (c) 2019 Peter Kvitek. All rights reserved.
 //
 // Author: Peter Kvitek (pete@kvitek.com)
 //
@@ -15,46 +15,24 @@
 //
 // -----------------------------------------------------------------------------
 //
-// Scoped file object implementation.
+// XPLM Path API wrappers.
 
-#include "xplmpp/File.h"
+#ifndef XPLMPP_XPLMPATH_H
+#define XPLMPP_XPLMPATH_H
 
-#include "assert.h"
+#include "xplmpp/Base.h"
 
 namespace xplmpp {
 
-File::File(FILE* file)
-: file_(file) {
-}
+// Wraps XPLM Path API.
+class XPLMPath {
+ public:
 
-File::~File() {
-  Close();
-}
-
-bool File::Open(const char* file_name, const char * mode) {
-  assert(file_ == nullptr);
-  file_ = fopen(file_name, mode);
-  return file_ != nullptr;
-}
-
-void File::Close() {
-  if (ifstream_) {
-    ifstream_->close();
-    ifstream_ = nullptr;
-  }
-  if (file_) {
-    fclose(file_);
-    file_ = nullptr;
-  }
-}
-
-std::ifstream& File::ifstream() {
-  assert(file_ != nullptr);
-  if (!ifstream_) {
-    ifstream_ = std::make_unique<std::ifstream>(file_);
-  }
-
-  return *ifstream_;
-}
+  static std::string GetSystemFolder();
+  static std::string GetPrefsFolder();
+  static char GetDirectorySeparator();
+};
 
 }  // namespace xplmpp
+
+#endif  // #ifndef XPLMPP_XPLMPATH_H

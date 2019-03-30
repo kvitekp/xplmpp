@@ -15,46 +15,35 @@
 //
 // -----------------------------------------------------------------------------
 //
-// Scoped file object implementation.
+// XPLM Path API wrappers.
 
-#include "xplmpp/File.h"
+#include "xplmpp/XPLMPath.h"
 
-#include "assert.h"
+#include "XPLMUtilities.h"
 
 namespace xplmpp {
 
-File::File(FILE* file)
-: file_(file) {
+/*
+ * XPLM Path API wrappers.
+ */
+std::string XPLMPath::GetSystemFolder() {
+  char path[512 + 1];
+  ::XPLMGetSystemPath(path);
+  return path;
 }
 
-File::~File() {
-  Close();
-}
-
-bool File::Open(const char* file_name, const char * mode) {
-  assert(file_ == nullptr);
-  file_ = fopen(file_name, mode);
-  return file_ != nullptr;
-}
-
-void File::Close() {
-  if (ifstream_) {
-    ifstream_->close();
-    ifstream_ = nullptr;
+std::string XPLMPath::GetPrefsFolder() {
+  char path[512 + 1];
+  ::XPLMGetPrefsPath(path);
+  char* sep = strrchr(path, GetDirectorySeparator());
+  if (sep != nullptr) {
+    sep[1] = 0;
   }
-  if (file_) {
-    fclose(file_);
-    file_ = nullptr;
-  }
+  return path;
 }
 
-std::ifstream& File::ifstream() {
-  assert(file_ != nullptr);
-  if (!ifstream_) {
-    ifstream_ = std::make_unique<std::ifstream>(file_);
-  }
-
-  return *ifstream_;
+char XPLMPath::GetDirectorySeparator() {
+  return ::XPLMGetDirectorySeparator()[0];
 }
 
 }  // namespace xplmpp
