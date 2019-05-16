@@ -1,4 +1,4 @@
-// Copyright 2019 Peter Kvitek.
+// Copyright (c) 2019 Peter Kvitek.
 //
 // Author: Peter Kvitek (pete@kvitek.com)
 //

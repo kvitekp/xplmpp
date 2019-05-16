@@ -21,10 +21,10 @@
 #define XPLMPP_BASE_H
 
 // Include X-Plane headers
-#include "XPLMDefs.h"
+//#include "XPLMDefs.h"
 
 #if kXPLM_Version < 301
-#error This has to be compiled against at least the XPLM301 SDK
+//#error This has to be compiled against at least the XPLM301 SDK
 #endif
 
 // Include common declarations
