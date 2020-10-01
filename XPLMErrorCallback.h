@@ -33,7 +33,7 @@ class XPLMErrorCallback {
     virtual void OnPluginError(const char* error) = 0;
   };
 
-  XPLMErrorCallback(Handler* handler = nullptr);
+  explicit XPLMErrorCallback(Handler* handler = nullptr);
   ~XPLMErrorCallback();
 
   Handler* handler() const { return handler_; }

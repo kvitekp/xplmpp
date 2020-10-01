@@ -33,7 +33,7 @@ class XPLMWindow {
  public:
   class Builder;
   XPLMWindow();
-  XPLMWindow(Builder& builder);
+  explicit XPLMWindow(Builder& builder);
   virtual ~XPLMWindow();
 
   enum XPLMWindowVisibility { visible, hidden };
@@ -44,6 +44,8 @@ class XPLMWindow {
                       XPLMWindowDecoration decoration = xplm_WindowDecorationRoundRectangle);
 
   XPLMWindowID id() const { return id_; }
+
+  operator bool() const { return id() != nullptr; }
 
   // XPLM API wrappers
   void DestroyWindow();

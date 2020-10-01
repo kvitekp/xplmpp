@@ -34,7 +34,9 @@ class XPLMCommand {
     virtual bool OnCommand(XPLMCommandRef cmd_ref, XPLMCommandPhase phase) = 0;
   };
 
-  XPLMCommand(Handler* handler = nullptr);
+  XPLMCommand() {}
+  explicit XPLMCommand(XPLMCommandRef ref_);
+  explicit XPLMCommand(Handler* handler);
   ~XPLMCommand();
 
   XPLMCommandRef ref() const { return ref_; }

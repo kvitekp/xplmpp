@@ -24,6 +24,10 @@ namespace xplmpp {
 /*
  * XPLM Command abstraction implementation.
  */
+XPLMCommand::XPLMCommand(XPLMCommandRef ref)
+: ref_(ref) {
+}
+
 XPLMCommand::XPLMCommand(Handler* handler)
 : handler_(handler) {
 }

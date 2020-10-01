@@ -32,7 +32,7 @@ namespace xplmpp {
 class XPLMData {
  public:
 
-  XPLMData(const char* name = nullptr);
+  explicit XPLMData(const char* name = nullptr);
   ~XPLMData();
 
   XPLMDataRef data_ref() const { return data_ref_; }

@@ -34,10 +34,12 @@ class XPLMMenu {
     virtual void OnMenuCommand(XPLMMenu& menu, void* item_ref) = 0;
   };
 
-  XPLMMenu(Handler* handler = nullptr);
+  explicit XPLMMenu(Handler* handler = nullptr);
   ~XPLMMenu();
 
   XPLMMenuID id() const { return id_; }
+
+  operator bool() const { return id() != nullptr; }
 
   Handler* handler() const { return handler_; }
   void set_handler(Handler* handler) { handler_ = handler; }
